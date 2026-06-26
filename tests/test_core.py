@@ -16,7 +16,6 @@ from mana_habilidade_pseudonimizar_pii import (
     pseudonimizar_filenames,
 )
 
-
 # ─────────────────────────────────────────────────────────────────────
 # PIIPseudonimizador — caso conteúdo livre
 # ─────────────────────────────────────────────────────────────────────

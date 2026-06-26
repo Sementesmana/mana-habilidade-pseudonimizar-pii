@@ -87,7 +87,7 @@ class PIIPseudonimizador:
         self,
         dados: dict[str, Any],
         campos: dict[str, str] | None = None,
-    ) -> "PIIPseudonimizador":
+    ) -> PIIPseudonimizador:
         """
         Popula o mapa a partir de um dict estruturado.
 
@@ -141,7 +141,7 @@ class PIIPseudonimizador:
                         contador += 1
         return self
 
-    def adicionar(self, nome_real: str, codigo: str) -> "PIIPseudonimizador":
+    def adicionar(self, nome_real: str, codigo: str) -> PIIPseudonimizador:
         """Adiciona um par nome→código manualmente. Idempotente. Encadeável."""
         nome = (nome_real or "").strip()
         if nome and nome not in self.mapa:
@@ -303,10 +303,7 @@ def pseudonimizar_filenames(
         while anon in mapa:
             # Preserva extensão no sufixo: "doc.pdf" → "doc_1.pdf"
             m = re.match(r"^(.*?)(\.[^.]{1,5})$", base)
-            if m:
-                anon = f"{m.group(1)}_{idx}{m.group(2)}"
-            else:
-                anon = f"{base}_{idx}"
+            anon = f"{m.group(1)}_{idx}{m.group(2)}" if m else f"{base}_{idx}"
             idx += 1
         mapa[anon] = fn
         anon_list.append(anon)
