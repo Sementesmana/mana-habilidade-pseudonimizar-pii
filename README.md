@@ -1,126 +1,126 @@
-# template-habilidade-mana
+# mana-habilidade-pseudonimizar-pii
 
-> Template **GitHub Repository** pra criar habilidades novas da **Maná Builder**.
+> **Habilidade canônica da Maná Builder.** Pseudonimização defensiva de PII (nomes próprios, CPF, CNPJ, sequências longas, filenames) antes de enviar payload pra LLM ou API de terceiros. Permite desmascarar a resposta antes de salvar/exibir.
 
-Este repo é um **GitHub Template Repository**. Quando você precisar criar uma habilidade nova, clica em **"Use this template"** no GitHub e o repo é clonado pra você com toda a estrutura pronta.
+**Status:** alpha · **Versão:** 0.1.0 · **Owner:** @xayer-mana
 
-## Quando usar
+## Por que existe
 
-Quando você está construindo um agente Maná e identifica uma **capacidade reusável** que não existe ainda como habilidade da Maná Builder, e que vai ser usada por **2+ agentes** (regra da 2ª cópia — ver [[ADR 2026-06-26 fluxo criação habilidade]]).
+ADR transversal [`2026-06-19-pseudonimizacao-padrao-llm-e-terceiros`](https://github.com/Sementesmana/mana-vault) tornou **OBRIGATÓRIO** pseudonimizar PII antes de qualquer chamada pra LLM/3rd-party na Maná. Esta habilidade é a implementação canônica unificada — substitui as 2 cópias divergentes existentes:
 
-Exceções à regra da 2ª cópia (extrair direto, mesmo com 1 consumidor):
-- Capacidade transversal de segurança (ex: pseudonimização)
-- Capacidade que toca PII / LGPD
-- Decisão explícita do Xayer ou ADR específico
+- `agente-comite-credito/app/integrations/_pseudonimizador.py` (113 linhas)
+- `agente-documentos/agente_documentos.py:296-354` (~60 linhas inline)
 
-## Como usar
+Primeira habilidade real do portfólio Maná Builder (piloto do fluxo do ADR `2026-06-26-fluxo-criacao-habilidade-mana-builder`).
 
-### Passo 1 — Criar repo a partir do template
-
-1. Vá em https://github.com/Sementesmana/template-habilidade-mana
-2. Clique em **"Use this template" → "Create a new repository"**
-3. Nome do repo: `mana-habilidade-<verbo-substantivo>` (ex: `mana-habilidade-pseudonimizar-pii`, `mana-habilidade-extrair-pdf`)
-4. Owner: `Sementesmana`
-5. Visibilidade: **Private**
-6. Clique **Create repository**
-
-### Passo 2 — Clone local e renomeie placeholders
+## Instalação
 
 ```bash
-git clone https://github.com/Sementesmana/mana-habilidade-<nome>.git
-cd mana-habilidade-<nome>
-
-# Renomear pasta do pacote
-mv src/mana_habilidade_placeholder src/mana_habilidade_<nome_sem_hifen_lowercase>
-
-# Substituir placeholders em pyproject.toml, manifest.yaml, SKILL.md
-# (manual ou via sed — ver Passo 3)
+pip install mana-habilidade-pseudonimizar-pii
 ```
 
-### Passo 3 — Substituir placeholders
+(Distribuído via GitHub Packages privado da Org `Sementesmana`. Auth via `GITHUB_TOKEN` no Railway.)
 
-Procure por `<HABILIDADE>` em todos os arquivos e substitua pelo nome real da habilidade. Locais:
-- `pyproject.toml` → `name`, `description`
-- `manifest.yaml` → `nome`, `descricao`, `owner`
-- `SKILL.md` → todo o conteúdo
-- `README.md` → criar/atualizar com descrição real
-- `src/mana_habilidades_<nome>/__init__.py` → ajustar exports
+## Uso rápido
 
-### Passo 4 — Implementar a habilidade
-
-1. Código em `src/mana_habilidades_<nome>/`
-2. Testes em `tests/` (cobertura mínima >70%)
-3. Type hints + docstrings obrigatórios em API pública
-4. Exemplo de uso em `docs/EXEMPLO_USO.md`
-
-### Passo 5 — Preencher SKILL.md
-
-O `SKILL.md` vai pro plugin Maná de Skills no Cowork (`Sementesmana/plugin-mana-skills`) — é como a IA (Claude/Cowork) descobre que essa habilidade existe e quando usar.
-
-Critérios mínimos:
-- "Quando usar" claro (1-3 frases)
-- "Input" e "Output" tipados
-- Exemplo de código real
-- Limitações conhecidas
-
-### Passo 6 — Push e publish
-
-```bash
-git add .
-git commit -m "feat: implementação inicial da habilidade <nome>"
-git push origin main
-```
-
-GitHub Actions roda automaticamente:
-1. CI (`ci.yml`) — lint + test
-2. Publish (`publish.yml`) — publica `mana-habilidade-<nome>==0.1.0` no GitHub Packages
-
-### Passo 7 — Documentar no vault
-
-Crie nota em `ManaVault/06-Agentes-e-Skills/habilidades/<nome>.md` (template em `_Templates/nota-habilidade.md` do vault).
-
-### Passo 8 — Distribuir via plugin Maná
-
-Abra PR em `Sementesmana/plugin-mana-skills`:
-- Adicione `_kits/skills/habilidades/<nome>/SKILL.md` (cópia do SKILL.md deste repo)
-- Atualize `CHANGELOG.md` central
-
-CODEOWNERS revisa, merge, Cowork de todos os devs pega na próxima atualização.
-
-## Consumo por outros agentes
-
-Agente que quer usar essa habilidade adiciona ao `requirements.txt`:
-
-```
-mana-habilidade-<nome>>=0.1,<1.0
-```
-
-E importa:
+### Caso 1 — Conteúdo livre com nomes próprios
 
 ```python
-from mana_habilidades.<nome> import ...
+from mana_habilidade_pseudonimizar_pii import PIIPseudonimizador
+
+pseudo = PIIPseudonimizador().construir_mapa_de_dict({
+    "cliente": "Fazenda São João Ltda",
+    "vendedor": "Carlos Pereira",
+    "participantes": [{"nome": "Ana Diretoria"}, {"nome": "Bruno Risco"}],
+})
+
+# Pseudonimiza payload completo (recursivo em dict/list/str)
+payload_anon = pseudo.aplicar(payload_dict)
+
+# Chama LLM
+resposta_anon = claude.messages.create(payload_anon)
+
+# Desmascara resposta antes de salvar
+resposta_real = pseudo.desmascarar(resposta_anon)
 ```
 
-## Versionamento
+### Caso 2 — Filenames (triagem)
 
-Semver estrito ([[ADR 2026-06-26 versionamento distribuição]]):
-- **PATCH** (`0.1.0 → 0.1.1`): bug fix sem mudança de interface
-- **MINOR** (`0.1.0 → 0.2.0`): nova função/método, retrocompatível
-- **MAJOR** (`0.1.0 → 1.0.0`): breaking change — exige ADR específico de breaking change
+```python
+from mana_habilidade_pseudonimizar_pii import pseudonimizar_filename
+
+pseudonimizar_filename(
+    "CNH_Joao_Silva_12345678900.pdf",
+    contexto={"cliente_nome": "Joao Silva"},
+)
+# → "CNH_CLIENTE_CPF.pdf"
+```
+
+### Caso 3 — Combinar nomes + identificadores
+
+```python
+pseudo = PIIPseudonimizador(aplicar_identificadores=True)
+pseudo.construir_mapa_de_dict({"cliente": "Joao Silva"})
+pseudo.aplicar("Cliente Joao Silva, CPF 123.456.789-00, fez pedido.")
+# → "Cliente CLIENTE, CPF CPF, fez pedido."
+```
+
+## API pública
+
+| Símbolo | Função |
+|---|---|
+| `PIIPseudonimizador` | Classe principal. Pseudonimiza conteúdo livre com nomes próprios + (opcional) identificadores estruturados. |
+| `PIIPseudonimizador.construir_mapa_de_dict(dados, campos=...)` | Builder: popula mapa a partir de dict estruturado. Encadeável. |
+| `PIIPseudonimizador.adicionar(nome, codigo)` | Adiciona par manual. Encadeável. |
+| `PIIPseudonimizador.aplicar(obj)` | Aplica recursivo em dict/list/str/tuple. Não muta entrada. |
+| `PIIPseudonimizador.desmascarar(texto)` | Reverte código → nome real. |
+| `pseudonimizar_filename(fn, contexto=None)` | Pseudonimiza 1 filename (CPF, CNPJ, cliente_nome, NUM). |
+| `pseudonimizar_filenames(lista, contexto=None)` | Idem em lista, retorna `(lista_anon, mapa_anon_to_original)`. Garante unicidade. |
+
+Detalhes em [`SKILL.md`](./SKILL.md) e docstrings dos métodos.
+
+## Limitações conhecidas
+
+- Não cobre representantes/sócios/cônjuge automaticamente — usar `mapa_nomes` manual ou `adicionar()`.
+- Identificadores estruturados não são desmascarados (não há mapeamento reverso).
+- Não detecta nomes próprios genéricos (sem mapa). Pra detectar PII não-mapeada, usar NER (outra habilidade).
+- Não pseudoniza endereço, telefone, email — escopo intencionalmente focado. Estender quando 2º consumidor precisar.
 
 ## ADRs aplicáveis
 
-- [Fluxo criação habilidade](https://github.com/Sementesmana/mana-vault/blob/main/08-Decisoes/2026-06-26-fluxo-criacao-habilidade-mana-builder.md)
-- [Versionamento + distribuição](https://github.com/Sementesmana/mana-vault/blob/main/08-Decisoes/2026-06-26-versionamento-distribuicao-mana-builder.md)
-- [Plugin Maná Skills](https://github.com/Sementesmana/mana-vault/blob/main/08-Decisoes/2026-06-26-plugin-mana-skills-cowork.md)
-- [Maná Builder + Matriz](https://github.com/Sementesmana/mana-vault/blob/main/08-Decisoes/2026-06-26-mana-builder-matriz-cobertura.md)
+- `2026-06-19-pseudonimizacao-padrao-llm-e-terceiros` — princípio transversal OBRIGATÓRIO
+- `2026-06-24-plataforma-agentica-mana-5-camadas` — Camada 2C
+- `2026-06-26-mana-builder-matriz-cobertura` — Maná Builder
+- `2026-06-26-fluxo-criacao-habilidade-mana-builder` — ciclo de vida (este repo é piloto)
+- `2026-06-26-versionamento-distribuicao-mana-builder` — semver + GH Packages
+- `2026-06-26-plugin-mana-skills-cowork` — distribuição via Cowork
 
-## Suporte
+## Desenvolvimento
 
-- Skill `nova-habilidade-mana` no Cowork orienta cada etapa
-- Dono da habilidade = quem criou (registrado em `CODEOWNERS` + `manifest.yaml`)
-- Dúvidas estruturais: Xayer
+```bash
+git clone https://github.com/Sementesmana/mana-habilidade-pseudonimizar-pii.git
+cd mana-habilidade-pseudonimizar-pii
+
+pip install -e ".[dev]"
+
+ruff check src/ tests/
+pytest
+```
+
+CI roda lint + test em Python 3.10, 3.11 e 3.12. Cobertura mínima: 70%.
+
+## Versionamento
+
+Semver estrito ([`2026-06-26-versionamento-distribuicao-mana-builder`](https://github.com/Sementesmana/mana-vault)):
+
+- **PATCH** (`0.1.0 → 0.1.1`): bug fix sem mudança de interface
+- **MINOR** (`0.1.0 → 0.2.0`): nova função/método, retrocompatível
+- **MAJOR** (`0.1.0 → 1.0.0`): breaking change — exige ADR específico
+
+## Licença
+
+Proprietary — Sementes Maná LTDA. Ver `LICENSE`.
 
 ---
 
-*Sementes Maná LTDA · 2026*
+*Habilidade canônica da Maná Builder · Sementes Maná LTDA · 2026*

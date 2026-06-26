@@ -3,16 +3,16 @@
 # Ver ADR 2026-06-26-fluxo-criacao-habilidade-mana-builder no vault.
 
 # Por padrão, dono da habilidade aprova tudo
-* @PLACEHOLDER-owner
+* @xayer-mana
 
 # Mudanças no SKILL.md tocam o manual operacional — duas revisões
-SKILL.md @PLACEHOLDER-owner @xayer-mana
+SKILL.md @xayer-mana @xayer-mana
 
 # Mudanças no manifest.yaml afetam catálogo + matriz — duas revisões
-manifest.yaml @PLACEHOLDER-owner @xayer-mana
+manifest.yaml @xayer-mana @xayer-mana
 
 # Mudanças no pyproject.toml (versionamento, deps) — duas revisões
-pyproject.toml @PLACEHOLDER-owner @xayer-mana
+pyproject.toml @xayer-mana @xayer-mana
 
 # Workflows + segurança — Xayer aprova
 /.github/ @xayer-mana
