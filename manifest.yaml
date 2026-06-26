@@ -1,0 +1,54 @@
+# Manifesto da Habilidade — Maná Builder
+# Preencher após "Use this template" e substituir todos os PLACEHOLDER.
+# Ver: ADR 2026-06-26-mana-builder-matriz-cobertura (vault)
+
+# Identidade
+nome: mana-habilidade-placeholder
+descricao: PLACEHOLDER — descrição da capacidade que a habilidade entrega
+categoria: habilidade        # habilidade | sdk | template | hub | agente | governanca
+
+# Ownership
+owner: PLACEHOLDER           # github username do dono (ex: dayanfcp-cmd, pereslorenaa-bit, xayer-mana)
+codeowners: [PLACEHOLDER]    # lista pra .github/CODEOWNERS
+
+# Versão (gerenciada por GitHub Actions; bumpar manualmente em PR)
+versao-atual: 0.1.0
+ultima-revisao: 2026-MM-DD
+
+# Status do ciclo de vida
+status: alpha               # alpha | beta | producao | deprecated
+
+# Matriz 3D (Maná Builder)
+# Habilidades transversais (segurança, infra) podem deixar cadeia e hierarquia vazias.
+cadeia: transversal         # apoio | negocio | gestao | transversal
+hierarquia: []              # [diretoria, gerencia, supervisao, operacao]
+tipo_artefato: habilidade   # fixo pra repos do tipo habilidade
+
+# Relações
+substitui-copias-em: []     # lista de agentes que tinham cópia divergente da capacidade
+consumidores: []            # lista de agentes que importam essa habilidade (atualizar)
+depende-de: []              # outras habilidades/SDKs que essa habilidade usa
+                            # (ex: [mana-habilidade-pseudonimizar-pii] se essa precisa daquela)
+
+# Distribuição
+registry: github-packages
+url-pacote: https://github.com/Sementesmana/mana-habilidade-placeholder/packages
+url-repo: https://github.com/Sementesmana/mana-habilidade-placeholder
+
+# Integração com sistemas legados
+# (se a habilidade fala diretamente com algum sistema legado, listar; senão deixar vazio)
+integracoes-legados: []     # [softexpert, protheus, simple-agro, mana-5-0]
+
+# Skill no Plugin Maná
+skill-publicada: false      # vira true após merge no plugin-mana-skills
+url-skill-no-plugin: ""
+
+# ADRs aplicáveis
+adrs:
+  - 2026-06-26-mana-builder-matriz-cobertura
+  - 2026-06-26-fluxo-criacao-habilidade-mana-builder
+  - 2026-06-26-versionamento-distribuicao-mana-builder
+  - 2026-06-26-plugin-mana-skills-cowork
+
+# Tags livres pra descoberta
+tags: [PLACEHOLDER]
