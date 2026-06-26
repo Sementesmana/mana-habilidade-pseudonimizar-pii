@@ -88,7 +88,7 @@ print(pseudo.aplicar(texto))
 
 - Python ≥ 3.10
 - Apenas stdlib (`re`, `typing`) — zero dependência externa
-- Instalação: `pip install mana-habilidade-pseudonimizar-pii` (via GitHub Packages da Org Sementesmana)
+- Instalação: `pip install "git+https://github.com/Sementesmana/mana-habilidade-pseudonimizar-pii.git@v0.1.0"` (GitHub Packages PyPI foi descontinuado pelo GitHub em 2024; padrão Maná é via tag git)
 
 ## Limitações conhecidas
 

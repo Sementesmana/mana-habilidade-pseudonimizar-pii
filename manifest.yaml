@@ -32,9 +32,12 @@ consumidores: []            # atualizar quando agentes migrarem (Fase 2)
 depende-de: []              # só stdlib
 
 # Distribuição
-registry: github-packages
-url-pacote: https://github.com/Sementesmana/mana-habilidade-pseudonimizar-pii/packages
+# GitHub Packages PyPI foi descontinuado em 2024. Padrão Maná: instalar via tag git
+# (pip install git+https://github.com/Sementesmana/<repo>.git@v<X.Y.Z>).
+registry: git-tag
+url-pacote: ""    # N/A — não há PyPI registry
 url-repo: https://github.com/Sementesmana/mana-habilidade-pseudonimizar-pii
+url-instalacao: "git+https://github.com/Sementesmana/mana-habilidade-pseudonimizar-pii.git@v0.1.0"
 
 # Integração com sistemas legados
 integracoes-legados: []     # habilidade transversal, sem ligação direta com legados

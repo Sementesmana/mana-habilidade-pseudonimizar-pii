@@ -15,11 +15,27 @@ Primeira habilidade real do portfólio Maná Builder (piloto do fluxo do ADR `20
 
 ## Instalação
 
-```bash
-pip install mana-habilidade-pseudonimizar-pii
+Distribuído via Git tag (não há PyPI — GitHub Packages PyPI foi descontinuado em 2024).
+
+**No `requirements.txt`:**
+
+```
+mana-habilidade-pseudonimizar-pii @ git+https://github.com/Sementesmana/mana-habilidade-pseudonimizar-pii.git@v0.1.0
 ```
 
-(Distribuído via GitHub Packages privado da Org `Sementesmana`. Auth via `GITHUB_TOKEN` no Railway.)
+**Ou via pip diretamente:**
+
+```bash
+pip install "git+https://github.com/Sementesmana/mana-habilidade-pseudonimizar-pii.git@v0.1.0"
+```
+
+Em ambientes (Railway, GitHub Actions) auth via `GITHUB_TOKEN` no header — repo privado da Org `Sementesmana` exige token. Padrão recomendado em `requirements.txt`:
+
+```
+mana-habilidade-pseudonimizar-pii @ git+https://${GITHUB_TOKEN}@github.com/Sementesmana/mana-habilidade-pseudonimizar-pii.git@v0.1.0
+```
+
+Versão: substituir `v0.1.0` pela tag desejada (semver — ver seção "Versionamento" abaixo).
 
 ## Uso rápido
 
