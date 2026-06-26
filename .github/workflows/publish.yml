@@ -45,7 +45,10 @@ jobs:
           TWINE_USERNAME: ${{ github.actor }}
           TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           TWINE_REPOSITORY_URL: https://pypi.pkg.github.com/Sementesmana/
-        run: twine upload --skip-existing dist/*.tar.gz dist/*.whl
+        # NOTA: GitHub Packages PyPI NAO suporta --skip-existing (twine).
+        # Re-publish da mesma versao vai falhar com 409 — bumpar versao no
+        # pyproject.toml antes de re-rodar.
+        run: twine upload dist/*.tar.gz dist/*.whl
 
       - name: Open PR in plugin-mana-skills (TODO)
         if: false  # ativar quando plugin-mana-skills existir
