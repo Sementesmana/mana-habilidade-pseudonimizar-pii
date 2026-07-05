@@ -13,10 +13,12 @@ codeowners: [xayer-mana]
 
 # Versão (gerenciada por GitHub Actions; bumpar manualmente em PR)
 versao-atual: 0.1.0
-ultima-revisao: 2026-06-26
+ultima-revisao: 2026-07-04
 
 # Status do ciclo de vida
 status: alpha               # alpha → beta após migrar 1 agente real → producao após 2
+notas-de-migracao:
+  - "2026-07-04: 1º consumidor EM DEPLOY — agente-documentos Aba 2 v2 (ADR 2026-07-04-aba2-v2-deterministica-lake-sem-check-cpr): habilidade no requirements.txt; pipeline usa PIIPseudonimizador com fallback local gracioso se import falhar. Ao validar em prod, mover agente-documentos pra consumidores (candidato ao gate alpha→beta). Aba 1 (_pseudonimizar_filename inline) ainda NÃO migrada."
 
 # Matriz 3D (Maná Builder)
 # Habilidade transversal de segurança/LGPD — não atrelada a cadeia ou hierarquia.
