@@ -18,7 +18,8 @@ ultima-revisao: 2026-07-04
 # Status do ciclo de vida
 status: alpha               # alpha → beta após migrar 1 agente real → producao após 2
 notas-de-migracao:
-  - "2026-07-04: 1º consumidor EM DEPLOY — agente-documentos Aba 2 v2 (ADR 2026-07-04-aba2-v2-deterministica-lake-sem-check-cpr): habilidade no requirements.txt; pipeline usa PIIPseudonimizador com fallback local gracioso se import falhar. Ao validar em prod, mover agente-documentos pra consumidores (candidato ao gate alpha→beta). Aba 1 (_pseudonimizar_filename inline) ainda NÃO migrada."
+  - "2026-07-04: 1º consumidor EM DEPLOY — agente-documentos Aba 2 v2 (ADR 2026-07-04-aba2-v2-deterministica-lake-sem-check-cpr): habilidade no requirements.txt; pipeline usa PIIPseudonimizador com fallback local gracioso se import falhar. Aba 1 (_pseudonimizar_filename inline) ainda NÃO migrada."
+  - "2026-07-05: smoke em prod revelou GAP DE API — PIIPseudonimizador v0.1.0 não tem registrar_nomes(lista) pra pré-registrar nomes conhecidos (cliente/cônjuge/sócios/grupo econ); agente-documentos caiu no fallback local (funcional, placeholders [CLIENTE-1]/[CPF-1] ok). Backlog v0.2.0: adicionar registrar_nomes. Consumo real parcial — gate alpha→beta na decisão do Xayer."
 
 # Matriz 3D (Maná Builder)
 # Habilidade transversal de segurança/LGPD — não atrelada a cadeia ou hierarquia.
@@ -30,7 +31,7 @@ tipo_artefato: habilidade
 substitui-copias-em:
   - agente-comite-credito   # app/integrations/_pseudonimizador.py (113 linhas)
   - agente-documentos       # _pseudonimizar_filename inline em agente_documentos.py
-consumidores: []            # atualizar quando agentes migrarem (Fase 2)
+consumidores: [agente-documentos]   # Aba 2 v2 (2026-07-05) — via fallback local (habilidade sem registrar_nomes; ver notas)
 depende-de: []              # só stdlib
 
 # Distribuição
